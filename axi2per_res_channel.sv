@@ -135,7 +135,7 @@ module axi2per_res_channel
      end
    
    // STORES REQUEST ADDRESS BIT 2 TRANSFER TYPE AND THE ID WHEN A REQUEST OCCURS ON THE REQ CHANNEL
-   always_ff @ (posedge clk_i)
+   always_ff @ (posedge clk_i, negedge rst_ni)
      begin
 	if (rst_ni == 1'b0)
 	  begin
