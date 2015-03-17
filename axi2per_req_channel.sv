@@ -68,7 +68,10 @@ module axi2per_req_channel
     output logic                      trans_we_o,
     output logic [AXI_ID_WIDTH-1:0]   trans_id_o,
     output logic [AXI_ADDR_WIDTH-1:0] trans_add_o, 
-    input  logic                      trans_r_valid_i
+    input  logic                      trans_r_valid_i,
+
+    // BUSY SIGNAL
+    output logic                      busy_o
     
     );
    
@@ -105,6 +108,8 @@ module axi2per_req_channel
 	trans_we_o           = '0;
 	trans_id_o           = '0;
 	trans_add_o          = '0;
+	
+	busy_o               = '0;
 	
 	NS                   = TRANS_IDLE;
 	
@@ -180,6 +185,8 @@ module axi2per_req_channel
 	       axi_slave_aw_ready_o = '0;     // PENDING TRANSACTION WRITE ADDRESS CHANNEL NOT READY
 	       axi_slave_ar_ready_o = '0;     // PENDING TRANSACTION READ ADDRESS CHANNEL NOT READY
 	       axi_slave_w_ready_o  = '0;     // PENDING TRANSACTION WRITE DATA CHANNEL NOT READY
+	       
+	       busy_o               = '1;
 	       
 	       if ( trans_r_valid_i == 1'b1 ) // RECEIVED NOTIFICATION FROM RESPONSE CHANNEL: TRANSACTION COMPLETED
 		 begin

@@ -84,7 +84,11 @@ module axi2per
     //RESPONSE CHANNEL
     input logic                       per_master_r_valid_i,
     input logic                       per_master_r_opc_i,
-    input logic [31:0]                per_master_r_rdata_i
+    input logic [31:0]                per_master_r_rdata_i,
+    
+    // BUSY SIGNAL
+    output logic                      busy_o
+    
     );
    
    // SIGNAL DECLARATION
@@ -203,7 +207,9 @@ module axi2per
       .trans_we_o(s_trans_we),
       .trans_id_o(s_trans_id),
       .trans_add_o(s_trans_add),
-      .trans_r_valid_i(s_trans_r_valid)
+      .trans_r_valid_i(s_trans_r_valid),
+      
+      .busy_o(busy_o)
       );
    
    // AXI2PER RESPONSE CHANNEL
