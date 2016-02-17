@@ -1,4 +1,7 @@
 axi2per:
+  incdirs: [
+    .,
+  ]
   files: [
     axi2per_ar_buffer.sv,
     axi2per_aw_buffer.sv,
