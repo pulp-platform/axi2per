@@ -51,7 +51,7 @@ module axi2per_res_channel
    
    logic                              s_trans_we_buf;
    logic [AXI_ID_WIDTH-1:0]           s_trans_id_buf;
-   logic [AXI_ADDR_WIDTH-1:0]         s_trans_add_buf;
+   logic                              s_trans_add_alignment;  //0 --> aligned to 64bit, 1--> not aligned to 64bit
    
    enum logic  { TRANS_IDLE, TRANS_PENDING } CS, NS;
    
@@ -134,17 +134,17 @@ module axi2per_res_channel
      begin
         if (rst_ni == 1'b0)
           begin
-             s_trans_we_buf  <= '0;
-             s_trans_add_buf <= '0;
-             s_trans_id_buf  <= '0;
+             s_trans_we_buf        <= '0;
+             s_trans_add_alignment <= 1'b0;
+             s_trans_id_buf        <= '0;
           end
         else
           begin
              if(trans_req_i == 1'b1)
                begin
-                  s_trans_we_buf  <= trans_we_i;
-                  s_trans_add_buf <= trans_add_i[2];
-                  s_trans_id_buf  <= trans_id_i;
+                  s_trans_we_buf        <= trans_we_i;
+                  s_trans_add_alignment <= trans_add_i[2];
+                  s_trans_id_buf        <= trans_id_i;
                end
           end
      end
@@ -166,7 +166,7 @@ module axi2per_res_channel
    // SELECT MSB OR LSBS OF DATA
    always_comb
      begin
-        if ( s_trans_add_buf == 1'b0 )
+        if ( s_trans_add_alignment == 1'b0 )
           begin
              s_axi_slave_r_data = {32'b0,s_per_master_r_data};
           end
