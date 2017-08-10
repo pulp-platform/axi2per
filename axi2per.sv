@@ -89,7 +89,7 @@ module axi2per #(
     //REQUEST CHANNEL
     output logic                        per_master_req_o,
     output logic [PER_ADDR_WIDTH-1:0]   per_master_add_o,
-    output logic                        per_master_we_o,
+    output logic                        per_master_we_no,
     output logic [PER_DATA_WIDTH-1:0]   per_master_wdata_o,
     output logic [PER_DATA_WIDTH/8-1:0] per_master_be_o,
     input  logic                        per_master_gnt_i,
@@ -209,7 +209,7 @@ module axi2per #(
 
       .per_master_req_o      ( per_master_req_o    ),
       .per_master_add_o      ( per_master_add_o    ),
-      .per_master_we_o       ( per_master_we_o     ),
+      .per_master_we_no      ( per_master_we_no    ),
       .per_master_wdata_o    ( per_master_wdata_o  ),
       .per_master_be_o       ( per_master_be_o     ),
       .per_master_gnt_i      ( per_master_gnt_i    ),

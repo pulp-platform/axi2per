@@ -70,7 +70,7 @@ module axi2per_req_channel
    // PERIPHERAL REQUEST CHANNEL
    output logic                        per_master_req_o,
    output logic [PER_ADDR_WIDTH-1:0]   per_master_add_o,
-   output logic                        per_master_we_o,
+   output logic                        per_master_we_no,
    output logic [PER_DATA_WIDTH-1:0]   per_master_wdata_o,
    output logic [PER_DATA_WIDTH/8-1:0] per_master_be_o,
    input  logic                        per_master_gnt_i,
@@ -105,7 +105,7 @@ module axi2per_req_channel
 
         per_master_req_o     = '0;
         per_master_add_o     = '0;
-        per_master_we_o      = '0;
+        per_master_we_no     = '0;
         per_master_wdata_o   = '0;
         per_master_be_o      = '0;
 
@@ -125,7 +125,7 @@ module axi2per_req_channel
                 if (axi_slave_ar_valid_i == 1'b1 ) begin // REQUEST FROM READ ADDRESS CHANNEL
 
                     per_master_req_o = 1'b1;                     // MAKE THE REQUEST TO THE PHERIPHERAL INTERCONNECT
-                    per_master_we_o  = 1'b1;                     // READ OPERATION
+                    per_master_we_no = 1'b1;                     // READ OPERATION
                     per_master_add_o = axi_slave_ar_addr_i;      // ADDRESS COMES FROM ADDRESS READ CHANNEL
 
                     if (per_master_gnt_i == 1'b1 ) begin // THE REQUEST IS ACKNOWLEDGED FROM THE PERIPHERAL INTERCONNECT
@@ -143,7 +143,7 @@ module axi2per_req_channel
                     // REQUEST FROM WRITE DATA CHANNEL and REQUEST FROM WRITE ADDRESS CHANNEL
                     if (axi_slave_aw_valid_i == 1'b1 && axi_slave_w_valid_i == 1'b1) begin
                          per_master_req_o = 1'b1;                     // MAKE THE REQUEST TO THE PHERIPHERAL INTERCONNECT
-                         per_master_we_o  = 1'b0;                     // WRITE OPERATION
+                         per_master_we_no = 1'b0;                     // WRITE OPERATION
                          per_master_add_o = axi_slave_aw_addr_i;      // ADDRESS COMES FROM WRITE ADDRESS CHANNEL
 
                          // FORWARD THE RIGHT AXI DATA TO THE PERIPHERAL BYTE ENABLE
