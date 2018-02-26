@@ -1,106 +1,106 @@
-/* Copyright (C) 2017 ETH Zurich, University of Bologna
- * All rights reserved.
- *
- * This code is under development and not yet released to the public.
- * Until it is released, the code is under the copyright of ETH Zurich and
- * the University of Bologna, and may contain confidential and/or unpublished
- * work. Any reuse/redistribution is strictly forbidden without written
- * permission from ETH Zurich.
- *
- * Bug fixes and contributions will eventually be released under the
- * SolderPad open hardware license in the context of the PULP platform
- * (http://www.pulp-platform.org), under the copyright of ETH Zurich and the
- * University of Bologna.
- */
+// Copyright 2018 ETH Zurich and University of Bologna.
+// Copyright and related rights are licensed under the Solderpad Hardware
+// License, Version 0.51 (the "License"); you may not use this file except in
+// compliance with the License. You may obtain a copy of the License at
+// http://solderpad.org/licenses/SHL-0.51. Unless required by applicable law
+// or agreed to in writing, software, hardware and materials distributed under
+// this License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations under the License.
 
-module axi2per #(
-    parameter int unsigned PER_ADDR_WIDTH = 32,
-    parameter int unsigned PER_DATA_WIDTH = 32,
-    parameter int unsigned PER_ID_WIDTH   = 5,
-    parameter int unsigned AXI_ADDR_WIDTH = 32,
-    parameter int unsigned AXI_DATA_WIDTH = 64,
-    parameter int unsigned AXI_USER_WIDTH = 6,
-    parameter int unsigned AXI_ID_WIDTH   = 3,
-    parameter int unsigned BUFFER_DEPTH   = 2,
-    parameter int unsigned AXI_STRB_WIDTH = AXI_DATA_WIDTH/8
-)(
-    input  logic                      clk_i,
-    input  logic                      rst_ni,
-    input  logic                      test_en_i,
+// Davide Rossi <davide.rossi@unibo.it>
 
-    // AXI4 SLAVE
-    //***************************************
-    // WRITE ADDRESS CHANNEL
-    input  logic                        axi_slave_aw_valid_i,
-    input  logic [AXI_ADDR_WIDTH-1:0]   axi_slave_aw_addr_i,
-    input  logic [2:0]                  axi_slave_aw_prot_i,
-    input  logic [3:0]                  axi_slave_aw_region_i,
-    input  logic [7:0]                  axi_slave_aw_len_i,
-    input  logic [2:0]                  axi_slave_aw_size_i,
-    input  logic [1:0]                  axi_slave_aw_burst_i,
-    input  logic                        axi_slave_aw_lock_i,
-    input  logic [3:0]                  axi_slave_aw_cache_i,
-    input  logic [3:0]                  axi_slave_aw_qos_i,
-    input  logic [AXI_ID_WIDTH-1:0]     axi_slave_aw_id_i,
-    input  logic [AXI_USER_WIDTH-1:0]   axi_slave_aw_user_i,
-    output logic                        axi_slave_aw_ready_o,
+module axi2per
+#(
+   parameter PER_ADDR_WIDTH = 32,
+   parameter PER_ID_WIDTH   = 5,
+   parameter AXI_ADDR_WIDTH = 32,
+   parameter AXI_DATA_WIDTH = 64,
+   parameter AXI_USER_WIDTH = 6,
+   parameter AXI_ID_WIDTH   = 3,
+   parameter BUFFER_DEPTH   = 2,
+   parameter AXI_STRB_WIDTH = AXI_DATA_WIDTH/8
+)
+(
+   input  logic                      clk_i,
+   input  logic                      rst_ni,
+   input  logic                      test_en_i,
 
-    // READ ADDRESS CHANNEL
-    input  logic                        axi_slave_ar_valid_i,
-    input  logic [AXI_ADDR_WIDTH-1:0]   axi_slave_ar_addr_i,
-    input  logic [2:0]                  axi_slave_ar_prot_i,
-    input  logic [3:0]                  axi_slave_ar_region_i,
-    input  logic [7:0]                  axi_slave_ar_len_i,
-    input  logic [2:0]                  axi_slave_ar_size_i,
-    input  logic [1:0]                  axi_slave_ar_burst_i,
-    input  logic                        axi_slave_ar_lock_i,
-    input  logic [3:0]                  axi_slave_ar_cache_i,
-    input  logic [3:0]                  axi_slave_ar_qos_i,
-    input  logic [AXI_ID_WIDTH-1:0]     axi_slave_ar_id_i,
-    input  logic [AXI_USER_WIDTH-1:0]   axi_slave_ar_user_i,
-    output logic                        axi_slave_ar_ready_o,
+   // AXI4 SLAVE
+   //***************************************
+   // WRITE ADDRESS CHANNEL
+   input  logic                      axi_slave_aw_valid_i,
+   input  logic [AXI_ADDR_WIDTH-1:0] axi_slave_aw_addr_i,
+   input  logic [2:0]                axi_slave_aw_prot_i,
+   input  logic [3:0]                axi_slave_aw_region_i,
+   input  logic [7:0]                axi_slave_aw_len_i,
+   input  logic [2:0]                axi_slave_aw_size_i,
+   input  logic [1:0]                axi_slave_aw_burst_i,
+   input  logic                      axi_slave_aw_lock_i,
+   input  logic [3:0]                axi_slave_aw_cache_i,
+   input  logic [3:0]                axi_slave_aw_qos_i,
+   input  logic [AXI_ID_WIDTH-1:0]   axi_slave_aw_id_i,
+   input  logic [AXI_USER_WIDTH-1:0] axi_slave_aw_user_i,
+   output logic                      axi_slave_aw_ready_o,
 
-    // WRITE DATA CHANNEL
-    input  logic                        axi_slave_w_valid_i,
-    input  logic [AXI_DATA_WIDTH-1:0]   axi_slave_w_data_i,
-    input  logic [AXI_STRB_WIDTH-1:0]   axi_slave_w_strb_i,
-    input  logic [AXI_USER_WIDTH-1:0]   axi_slave_w_user_i,
-    input  logic                        axi_slave_w_last_i,
-    output logic                        axi_slave_w_ready_o,
+   // READ ADDRESS CHANNEL
+   input  logic                      axi_slave_ar_valid_i,
+   input  logic [AXI_ADDR_WIDTH-1:0] axi_slave_ar_addr_i,
+   input  logic [2:0]                axi_slave_ar_prot_i,
+   input  logic [3:0]                axi_slave_ar_region_i,
+   input  logic [7:0]                axi_slave_ar_len_i,
+   input  logic [2:0]                axi_slave_ar_size_i,
+   input  logic [1:0]                axi_slave_ar_burst_i,
+   input  logic                      axi_slave_ar_lock_i,
+   input  logic [3:0]                axi_slave_ar_cache_i,
+   input  logic [3:0]                axi_slave_ar_qos_i,
+   input  logic [AXI_ID_WIDTH-1:0]   axi_slave_ar_id_i,
+   input  logic [AXI_USER_WIDTH-1:0] axi_slave_ar_user_i,
+   output logic                      axi_slave_ar_ready_o,
 
-    // READ DATA CHANNEL
-    output logic                        axi_slave_r_valid_o,
-    output logic [AXI_DATA_WIDTH-1:0]   axi_slave_r_data_o,
-    output logic [1:0]                  axi_slave_r_resp_o,
-    output logic                        axi_slave_r_last_o,
-    output logic [AXI_ID_WIDTH-1:0]     axi_slave_r_id_o,
-    output logic [AXI_USER_WIDTH-1:0]   axi_slave_r_user_o,
-    input  logic                        axi_slave_r_ready_i,
+   // WRITE DATA CHANNEL
+   input  logic                      axi_slave_w_valid_i,
+   input  logic [AXI_DATA_WIDTH-1:0] axi_slave_w_data_i,
+   input  logic [AXI_STRB_WIDTH-1:0] axi_slave_w_strb_i,
+   input  logic [AXI_USER_WIDTH-1:0] axi_slave_w_user_i,
+   input  logic                      axi_slave_w_last_i,
+   output logic                      axi_slave_w_ready_o,
 
-    // WRITE RESPONSE CHANNEL
-    output logic                        axi_slave_b_valid_o,
-    output logic [1:0]                  axi_slave_b_resp_o,
-    output logic [AXI_ID_WIDTH-1:0]     axi_slave_b_id_o,
-    output logic [AXI_USER_WIDTH-1:0]   axi_slave_b_user_o,
-    input  logic                        axi_slave_b_ready_i,
-    // ---------------------------------
-    // PERIPHERAL INTERCONNECT MASTER
-    // ---------------------------------
-    //REQUEST CHANNEL
-    output logic                        per_master_req_o,
-    output logic [PER_ADDR_WIDTH-1:0]   per_master_add_o,
-    output logic                        per_master_we_no,
-    output logic [PER_DATA_WIDTH-1:0]   per_master_wdata_o,
-    output logic [PER_DATA_WIDTH/8-1:0] per_master_be_o,
-    input  logic                        per_master_gnt_i,
-    //RESPONSE CHANNEL
-    input logic                         per_master_r_valid_i,
-    input logic                         per_master_r_opc_i,
-    input logic [PER_DATA_WIDTH-1:0]    per_master_r_rdata_i,
-    // BUSY SIGNAL
-    output logic                        busy_o
+   // READ DATA CHANNEL
+   output logic                      axi_slave_r_valid_o,
+   output logic [AXI_DATA_WIDTH-1:0] axi_slave_r_data_o,
+   output logic [1:0]                axi_slave_r_resp_o,
+   output logic                      axi_slave_r_last_o,
+   output logic [AXI_ID_WIDTH-1:0]   axi_slave_r_id_o,
+   output logic [AXI_USER_WIDTH-1:0] axi_slave_r_user_o,
+   input  logic                      axi_slave_r_ready_i,
+
+   // WRITE RESPONSE CHANNEL
+   output logic                      axi_slave_b_valid_o,
+   output logic [1:0]                axi_slave_b_resp_o,
+   output logic [AXI_ID_WIDTH-1:0]   axi_slave_b_id_o,
+   output logic [AXI_USER_WIDTH-1:0] axi_slave_b_user_o,
+   input  logic                      axi_slave_b_ready_i,
+
+   // PERIPHERAL INTERCONNECT MASTER
+   //***************************************
+   //REQUEST CHANNEL
+   output logic                      per_master_req_o,
+   output logic [PER_ADDR_WIDTH-1:0] per_master_add_o,
+   output logic                      per_master_we_no,
+   output logic [31:0]               per_master_wdata_o,
+   output logic [3:0]                per_master_be_o,
+   input  logic                      per_master_gnt_i,
+
+   //RESPONSE CHANNEL
+   input logic                       per_master_r_valid_i,
+   input logic                       per_master_r_opc_i,
+   input logic [31:0]                per_master_r_rdata_i,
+
+   // BUSY SIGNAL
+   output logic                      busy_o
 );
-
+   
    // SIGNAL DECLARATION
    logic                              s_aw_valid;
    logic [AXI_ADDR_WIDTH-1:0]         s_aw_addr;
@@ -115,7 +115,7 @@ module axi2per #(
    logic [AXI_ID_WIDTH-1:0]           s_aw_id;
    logic [AXI_USER_WIDTH-1:0]         s_aw_user;
    logic                              s_aw_ready;
-
+   
    logic                              s_ar_valid;
    logic [AXI_ADDR_WIDTH-1:0]         s_ar_addr;
    logic [2:0]                        s_ar_prot;
@@ -129,14 +129,14 @@ module axi2per #(
    logic [AXI_ID_WIDTH-1:0]           s_ar_id;
    logic [AXI_USER_WIDTH-1:0]         s_ar_user;
    logic                              s_ar_ready;
-
+   
    logic                              s_w_valid;
    logic [AXI_DATA_WIDTH-1:0]         s_w_data;
    logic [AXI_STRB_WIDTH-1:0]         s_w_strb;
    logic [AXI_USER_WIDTH-1:0]         s_w_user;
    logic                              s_w_last;
    logic                              s_w_ready;
-
+   
    logic                              s_r_valid;
    logic [AXI_DATA_WIDTH-1:0]         s_r_data;
    logic [1:0]                        s_r_resp;
@@ -144,24 +144,23 @@ module axi2per #(
    logic [AXI_ID_WIDTH-1:0]           s_r_id;
    logic [AXI_USER_WIDTH-1:0]         s_r_user;
    logic                              s_r_ready;
-
+   
    logic                              s_b_valid;
    logic [1:0]                        s_b_resp;
    logic [AXI_ID_WIDTH-1:0]           s_b_id;
    logic [AXI_USER_WIDTH-1:0]         s_b_user;
    logic                              s_b_ready;
-
+   
    logic                              s_trans_req;
    logic                              s_trans_we;
    logic [AXI_ID_WIDTH-1:0]           s_trans_id;
    logic [AXI_ADDR_WIDTH-1:0]         s_trans_add;
    logic                              s_trans_r_valid;
-
+     
    // AXI2PER REQUEST CHANNEL
    axi2per_req_channel
    #(
       .PER_ADDR_WIDTH        ( PER_ADDR_WIDTH      ),
-      .PER_DATA_WIDTH        ( PER_DATA_WIDTH      ),
       .AXI_ADDR_WIDTH        ( AXI_ADDR_WIDTH      ),
       .AXI_DATA_WIDTH        ( AXI_DATA_WIDTH      ),
       .AXI_USER_WIDTH        ( AXI_USER_WIDTH      ),
@@ -209,7 +208,7 @@ module axi2per #(
 
       .per_master_req_o      ( per_master_req_o    ),
       .per_master_add_o      ( per_master_add_o    ),
-      .per_master_we_no      ( per_master_we_no    ),
+      .per_master_we_o       ( per_master_we_no    ),
       .per_master_wdata_o    ( per_master_wdata_o  ),
       .per_master_be_o       ( per_master_be_o     ),
       .per_master_gnt_i      ( per_master_gnt_i    ),
@@ -227,7 +226,6 @@ module axi2per #(
    axi2per_res_channel
    #(
       .PER_ADDR_WIDTH       ( PER_ADDR_WIDTH       ),
-      .PER_DATA_WIDTH       ( PER_DATA_WIDTH       ),
       .AXI_ADDR_WIDTH       ( AXI_ADDR_WIDTH       ),
       .AXI_DATA_WIDTH       ( AXI_DATA_WIDTH       ),
       .AXI_USER_WIDTH       ( AXI_USER_WIDTH       ),
@@ -262,7 +260,7 @@ module axi2per #(
       .trans_add_i          ( s_trans_add          ),
       .trans_r_valid_o      ( s_trans_r_valid      )
    );
-
+   
 
 
 
@@ -308,7 +306,7 @@ module axi2per #(
       .master_user_o   ( s_aw_user              ),
       .master_ready_i  ( s_aw_ready             )
    );
-
+   
    // AXI READ ADDRESS CHANNEL BUFFER
    axi_ar_buffer
    #(
@@ -351,7 +349,7 @@ module axi2per #(
       .master_user_o    ( s_ar_user               ),
       .master_ready_i   ( s_ar_ready              )
    );
-
+   
    // WRITE DATA CHANNEL BUFFER
    axi_w_buffer
    #(
@@ -410,7 +408,7 @@ module axi2per #(
       .master_last_o   ( axi_slave_r_last_o   ),
       .master_ready_i  ( axi_slave_r_ready_i  )
    );
-
+   
    // WRITE RESPONSE CHANNEL BUFFER
    axi_b_buffer
    #(
@@ -436,12 +434,5 @@ module axi2per #(
       .master_user_o   ( axi_slave_b_user_o   ),
       .master_ready_i  ( axi_slave_b_ready_i  )
    );
-
-   `ifndef SYNTHESIS
-    initial begin
-        // Static sanity checks
-        assert (AXI_DATA_WIDTH == 64) else $error("[AXI2Per] Unsupported AXI data width");
-        assert (PER_DATA_WIDTH == 64 || PER_DATA_WIDTH == 32) else $error("[AXI2Per] Unsupported peripheral data width");
-    end
-   `endif
+   
 endmodule
