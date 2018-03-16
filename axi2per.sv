@@ -26,6 +26,8 @@ module axi2per
    input  logic                      rst_ni,
    input  logic                      test_en_i,
 
+   input  logic [5:0]                cluster_id_i,
+
    // AXI4 SLAVE
    //***************************************
    // WRITE ADDRESS CHANNEL
@@ -170,6 +172,8 @@ module axi2per
    (
       .clk_i                 ( clk_i               ),
       .rst_ni                ( rst_ni              ),
+
+      .cluster_id_i          ( cluster_id_i        ),
 
       .axi_slave_aw_valid_i  ( s_aw_valid          ),
       .axi_slave_aw_addr_i   ( s_aw_addr           ),

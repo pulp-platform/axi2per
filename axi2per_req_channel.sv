@@ -26,6 +26,8 @@ module axi2per_req_channel
    input logic                       clk_i,
    input logic                       rst_ni,
 
+   input  logic [5:0]                cluster_id_i,
+
    input  logic                      axi_slave_aw_valid_i,
    input  logic [AXI_ADDR_WIDTH-1:0] axi_slave_aw_addr_i,
    input  logic [2:0]                axi_slave_aw_prot_i,
@@ -184,6 +186,7 @@ module axi2per_req_channel
                            end
                       end
                  end
+                 per_master_add_o = per_master_add_o - (32'h0040_0000 * cluster_id_i);
             end
           
           TRANS_PENDING:
