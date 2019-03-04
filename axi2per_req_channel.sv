@@ -36,6 +36,7 @@ module axi2per_req_channel
    input  logic [2:0]                axi_slave_aw_size_i,
    input  logic [1:0]                axi_slave_aw_burst_i,
    input  logic                      axi_slave_aw_lock_i,
+   input  logic [5:0]                axi_slave_aw_atop_i,
    input  logic [3:0]                axi_slave_aw_cache_i,
    input  logic [3:0]                axi_slave_aw_qos_i,
    input  logic [AXI_ID_WIDTH-1:0]   axi_slave_aw_id_i,
@@ -215,6 +216,7 @@ module axi2per_req_channel
    //axi_slave_aw_region_i
    //axi_slave_aw_len_i
    //axi_slave_aw_lock_i
+   //axi_slave_aw_atop_i
    //axi_slave_aw_cache_i
    //axi_slave_aw_qos_i
    //axi_slave_aw_user_i

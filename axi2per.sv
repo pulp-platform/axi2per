@@ -39,6 +39,7 @@ module axi2per
    input  logic [2:0]                axi_slave_aw_size_i,
    input  logic [1:0]                axi_slave_aw_burst_i,
    input  logic                      axi_slave_aw_lock_i,
+   input  logic [5:0]                axi_slave_aw_atop_i,
    input  logic [3:0]                axi_slave_aw_cache_i,
    input  logic [3:0]                axi_slave_aw_qos_i,
    input  logic [AXI_ID_WIDTH-1:0]   axi_slave_aw_id_i,
@@ -112,6 +113,7 @@ module axi2per
    logic [2:0]                        s_aw_size;
    logic [1:0]                        s_aw_burst;
    logic                              s_aw_lock;
+   logic [5:0]                        s_aw_atop;
    logic [3:0]                        s_aw_cache;
    logic [3:0]                        s_aw_qos;
    logic [AXI_ID_WIDTH-1:0]           s_aw_id;
@@ -183,6 +185,7 @@ module axi2per
       .axi_slave_aw_size_i   ( s_aw_size           ),
       .axi_slave_aw_burst_i  ( s_aw_burst          ),
       .axi_slave_aw_lock_i   ( s_aw_lock           ),
+      .axi_slave_aw_atop_i   ( s_aw_atop           ),
       .axi_slave_aw_cache_i  ( s_aw_cache          ),
       .axi_slave_aw_qos_i    ( s_aw_qos            ),
       .axi_slave_aw_id_i     ( s_aw_id             ),
@@ -290,6 +293,7 @@ module axi2per
       .slave_size_i    ( axi_slave_aw_size_i    ),
       .slave_burst_i   ( axi_slave_aw_burst_i   ),
       .slave_lock_i    ( axi_slave_aw_lock_i    ),
+      .slave_atop_i    ( axi_slave_aw_atop_i    ),
       .slave_cache_i   ( axi_slave_aw_cache_i   ),
       .slave_qos_i     ( axi_slave_aw_qos_i     ),
       .slave_id_i      ( axi_slave_aw_id_i      ),
@@ -304,6 +308,7 @@ module axi2per
       .master_size_o   ( s_aw_size              ),
       .master_burst_o  ( s_aw_burst             ),
       .master_lock_o   ( s_aw_lock              ),
+      .master_atop_o   ( s_aw_atop              ),
       .master_cache_o  ( s_aw_cache             ),
       .master_qos_o    ( s_aw_qos               ),
       .master_id_o     ( s_aw_id                ),
