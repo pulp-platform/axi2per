@@ -286,6 +286,7 @@ module axi2per
       .slave_size_i    ( axi_slave_aw_size_i    ),
       .slave_burst_i   ( axi_slave_aw_burst_i   ),
       .slave_lock_i    ( axi_slave_aw_lock_i    ),
+      .slave_atop_i    ( '0                     ), // no atomics on this path
       .slave_cache_i   ( axi_slave_aw_cache_i   ),
       .slave_qos_i     ( axi_slave_aw_qos_i     ),
       .slave_id_i      ( axi_slave_aw_id_i      ),
